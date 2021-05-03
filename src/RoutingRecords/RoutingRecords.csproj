@@ -11,6 +11,10 @@
       utingRecords is a small set of tools that help Asp.Net Core developers to program cool and simple APIs in .Net 5. It relies on record type objects to define inline endpoints.
     </Description>
     <PackageProjectUrl>https://github.com/fernandoescolar/RoutingRecords</PackageProjectUrl>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="../../LICENSE.md" Pack="true" PackagePath="$(PackageLicenseFile)"/>
+  </ItemGroup>
 </Project>
