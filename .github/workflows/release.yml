@@ -50,7 +50,7 @@ jobs:
         run: |
           dotnet nuget push ./nupkg/**/*.nupkg -k ${{ secrets.NUGET_KEY }} -s https://api.nuget.org/v3/index.json
   release:
-    needs: [ build, pack ]
+    needs: pack
     runs-on: ubuntu-latest
     steps:
       - name: Download Artifact
