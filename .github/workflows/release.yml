@@ -26,7 +26,7 @@ jobs:
           ARRAY_VERSION=(${RELEASE_VERSION//-/ })
           VERSION="${ARRAY_VERSION[0]}"
           VERSION_SUFFIX="${ARRAY_VERSION[1]}"
-          dotnet pack -c Release -o nupkg ./src/RoutingRecords/RoutingRecords.csproj -p:AssemblyVersion=$VERSION -p:VersionPrefix=$VERSION -p:VersionSuffix=$VERSION_SUFFIX
+          dotnet pack -c Release -o nupkg ./src/RoutingRecords/RoutingRecords.csproj -p:AssemblyVersion=$VERSION -p:VersionPrefix=$VERSION -p:VersionSuffix=$VERSION_SUFFIX --include-symbols
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
