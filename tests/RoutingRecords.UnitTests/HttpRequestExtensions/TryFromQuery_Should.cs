@@ -4,7 +4,7 @@ using Moq;
 using System.Collections.Generic;
 using Xunit;
 
-namespace RoutingRecords.UnitTests
+namespace RoutingRecords.UnitTests.HttpRequestExtensions
 {
 	public class TryFromQuery_Should
 	{

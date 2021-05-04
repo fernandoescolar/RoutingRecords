@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace RoutingRecords.UnitTests
+namespace RoutingRecords.UnitTests.HttpRequestExtensions
 {
     public class FromJsonAsync_Should
 	{

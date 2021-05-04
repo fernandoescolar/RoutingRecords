@@ -3,14 +3,14 @@ using Microsoft.AspNetCore.Routing;
 using Moq;
 using Xunit;
 
-namespace RoutingRecords.UnitTests
+namespace RoutingRecords.UnitTests.HttpRequestExtensions
 {
-	public class FromRoute_Should
+	public class TryFromRoute_Should
 	{
 		private readonly RouteValueDictionary _routeValues;
 		private readonly Mock<HttpRequest> _request;
 
-		public FromRoute_Should()
+		public TryFromRoute_Should()
 		{
 			_routeValues = new RouteValueDictionary();
 			_request = new Mock<HttpRequest>();
@@ -18,11 +18,27 @@ namespace RoutingRecords.UnitTests
 		}
 
 		[Fact]
+		public void Return_false_When_not_exists()
+		{
+			var actual = _request.Object.TryFromRoute<int>("id", out _);
+			Assert.False(actual);
+		}
+
+		[Fact]
+		public void Return_true_When_exists()
+		{
+			_routeValues["id"] = string.Empty;
+
+			var actual = _request.Object.TryFromRoute<int>("id", out _);
+			Assert.True(actual);
+		}
+
+		[Fact]
 		public void Convert_object_from_string()
 		{
 			_routeValues["id"] = "1";
 
-			var actual = _request.Object.FromRoute<int>("id");
+			_request.Object.TryFromRoute<int>("id", out var actual);
 			Assert.Equal(1, actual);
 		}
 
@@ -32,7 +48,7 @@ namespace RoutingRecords.UnitTests
 			var expected = new object();
 			_routeValues["id"] = expected;
 
-			var actual = _request.Object.FromRoute<object>("id");
+			_request.Object.TryFromRoute<object>("id", out var actual);
 			Assert.Equal(expected, actual);
 		}
 
@@ -41,7 +57,7 @@ namespace RoutingRecords.UnitTests
 		{
 			_routeValues["id"] = null;
 
-			var actual = _request.Object.FromRoute<int>("id");
+			_request.Object.TryFromRoute<int>("id", out var actual);
 			Assert.Equal(default, actual);
 		}
 	}
