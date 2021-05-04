@@ -39,13 +39,21 @@ Isn't it cool?
 
 ## Quick start
 
-First you have to add the nuget package reference to your project:
+Create a new web project:
+
+```bash
+mkdir MyApp
+cd MyApp
+dotnet new web
+```
+
+First of all, you have to add `RoutingRecords` package reference to your project:
 
 ```bash
 dotnet add package RoutingRecords
 ```
 
-Then you have to call `AddRoutes` in the `ConfigureServices` and `MapRouteRecords` in the enpoints mapping section:
+Then you have to call `AddRouteRecords` in the `ConfigureServices` and `MapRouteRecords` in the enpoints mapping section:
 
 ```csharp
 using Microsoft.AspNetCore.Builder;
@@ -58,7 +66,7 @@ namespace SampleApp
 	{
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddRoutes(typeof(Startup).Assembly);
+			services.AddRouteRecords(typeof(Startup).Assembly);
 		}
 
 		public void Configure(IApplicationBuilder app)
@@ -113,9 +121,9 @@ Put(string Pattern, RouteDelegateAsync RouteDelegate);
 Trace(string Pattern, RouteDelegateAsync RouteDelegate);
 ```
 
-If you want to use them, you just have to create an object that inherits from one of these records, specify the pattern and the delegate.
+If you want to use them, you just have to create an object that inherits from one of these records, specify the pattern and declare the delegate.
 
-The delegate is a function that returns a Task (async function) and with `HttpRequest` and `HttpResponse` as parameters:
+The delegate is a function that returns a Task (async function) with a `HttpRequest` and a `HttpResponse` as parameters:
 
 ```csharp
 Task RouteDelegateAsync(HttpRequest req, HttpResponse res);
@@ -127,7 +135,7 @@ RoutingRecords adds some features related with API development:
 
 ### HttpRequest:
 
-These are the extension methods to extend the `HttpRequest` behavior:
+These are the methods to extend the `HttpRequest` behavior:
 
 ```csharp
 Task<T> FromJsonAsync<T>(bool validateMediaType = false, CancellationToken cancellationToken = default);
@@ -149,7 +157,7 @@ bool TryFromQuery<T>(string name, out T result);
 
 ### HttpResponse:
 
-These are the extension methods to extend the `HttpResponse` behavior:
+These are the methods to extend the `HttpResponse` behavior:
 
 ```csharp
 Task SendAsync(string body, CancellationToken cancellationToken = default);
@@ -166,6 +174,77 @@ HttpResponse Status(HttpStatusCode statusCode);
 - **SendAsync**: Writes a string in the response boy. The `mimeType` default value is "text/plain". If you don't specify `cancellationToken` it uses the current `HttpContext.RequestAborted` value.
 - **JsonAsync**: Writes an objet serialized as json in the response body. If you don't specify `cancellationToken` it uses the current `HttpContext.RequestAborted` value.
 - **Status**: Sets the response HTTP status code.
+
+## Authorization
+
+RoutingRoutes is full integrated with Asp.Net Authorization framework. You can add a global policy with an authorization requirement for all enpoints:
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddRouteRecords();
+
+    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .Add...(options => { ... });
+
+    services.AddAuthorization(options =>
+    {
+        options.FallbackPolicy = new AuthorizationPolicyBuilder()
+            .RequireAuthenticatedUser()
+            .Build();
+    });
+}
+
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+    app.UseRouting();
+    app.UseAuthorization();
+    app.UseEndpoints(endpoints => endpoints.MapRouteRecords());
+}
+```
+
+In the same way you get a `IEndpointConventionBuilder` when you are registering an endpoint, when you are mapping objects of type `RouteRecord`, you will get an object of type:
+
+- `IRecordEndpointConventionBuilder` for one record map call (`MapRouteRecord`).
+- `IRecordEndpointConventionBuilderCollection` for multiple records map call (`MapRouteRecords`).
+
+```csharp
+interface IRecordEndpointConventionBuilder
+    : IEndpointConventionBuilder
+{
+    Type RouteRecordType { get; }
+}
+
+interface IRecordEndpointConventionBuilderCollection
+	: IEndpointConventionBuilder, IEnumerable<IRecordEndpointConventionBuilder>
+{
+}
+```
+
+So you can use the convention builders for every `RouteRecord`:
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddRouteRecords();
+
+    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .Add...(options => { ... });
+
+    services.AddAuthorization();
+}
+
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+    app.UseRouting();
+    app.UseAuthorization();
+    app.UseEndpoints(endpoints
+        => endpoints.MapRouteRecords()
+                    .Where(x => x.RouteRecordType.IsNot<Hello>())
+                    .ToList()
+                    .ForEach(y => y.RequireAuthorization()));
+}
+```
 
 ## Benchmarks
 
@@ -315,4 +394,4 @@ namespace SampleApp.Api.Todos
 
 ## License
 
-The source code we develop at **cac-cli** is default being licensed as CC-BY-SA-4.0. You can read more about [here](LICENSE.md).
+The source code we develop at **RoutingRecords** is default being licensed as CC-BY-SA-4.0. You can read more about [here](LICENSE.md).

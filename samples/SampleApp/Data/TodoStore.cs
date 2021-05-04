@@ -1,23 +1,37 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
-namespace SampleApp
+namespace SampleApp.Data
 {
-	public class TodoStore
+	public class TodoStore : ITodoStore
 	{
 		private readonly Hashtable _todos = new Hashtable();
+		private int _counter = 0;
 
-		public int Counter { get; private set; }
+		public Task<IEnumerable<Todo>> GetAllAsync()
+			=> Task.FromResult(_todos.Values.Cast<Todo>());
 
-		public IEnumerable<Todo> GetAll() => _todos.Values.Cast<Todo>().ToList();
+		public Task<Todo> GetOneAsync(int id)
+			=> Task.FromResult(_todos[id] as Todo);
 
-		public Todo GetOne(int id) => _todos[id] as Todo;
+		public Task<Todo> InsertAsync(Todo todo)
+		{
+			_todos[++_counter] = todo = todo with { Id = _counter };
+			return Task.FromResult(todo);
+		}
 
-		public void Insert(Todo todo) => _todos[++Counter] = todo with { Id = Counter };
+		public Task<Todo> UpsertAsync(int id, Todo todo)
+		{
+			_todos[id] = todo = todo with { Id = id };
+			return Task.FromResult(todo);
+		}
 
-		public void Upsert(int id, Todo todo) => _todos[id] = todo with { Id = id };
-
-		public void Delete(int id) => _todos.Remove(id);
+		public Task DeleteAsync(int id)
+		{
+			_todos.Remove(id);
+			return Task.CompletedTask;
+		}
 	}
 }

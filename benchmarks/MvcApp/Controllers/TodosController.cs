@@ -11,7 +11,7 @@ namespace MvcApp.Controllers
 	{
 		private readonly TodoStore _store;
 
-		public TodosController(TodoStore store) 
+		public TodosController(TodoStore store)
 			=> _store = store;
 
 		[HttpGet]

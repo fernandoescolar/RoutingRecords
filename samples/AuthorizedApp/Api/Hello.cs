@@ -1,6 +1,6 @@
 using RoutingRecords;
 
-namespace SampleApp.Api
+namespace AuthorizedApp.Api
 {
 	public record Hello()
 		: Get("/", (req, res) =>

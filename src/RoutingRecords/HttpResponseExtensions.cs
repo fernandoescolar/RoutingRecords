@@ -32,11 +32,11 @@ namespace RoutingRecords
 		public static Task SendAsync(this HttpResponse res, string body, string mimeType, CancellationToken cancellationToken = default)
 		{
 			cancellationToken = cancellationToken == default ? res.HttpContext.RequestAborted : cancellationToken;
-            cancellationToken.ThrowIfCancellationRequested();
+			cancellationToken.ThrowIfCancellationRequested();
 
 			res.ContentType = mimeType;
 			var data = Encoding.UTF8.GetBytes(body);
-            return res.Body.WriteAsync(data, 0, data.Length, cancellationToken);
+			return res.Body.WriteAsync(data, 0, data.Length, cancellationToken);
 		}
 
 		/// <summary>

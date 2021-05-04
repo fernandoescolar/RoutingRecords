@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RoutingRecords
 {
-    public static class HttpResponseJsonExtensions
+	public static class HttpResponseJsonExtensions
 	{
 		private static readonly JsonSerializerOptions _jsonOptions
 			= new JsonSerializerOptions
@@ -25,7 +25,7 @@ namespace RoutingRecords
 		public static Task JsonAsync<T>(this HttpResponse res, T body, CancellationToken cancellationToken = default)
 		{
 			cancellationToken = cancellationToken == default ? res.HttpContext.RequestAborted : cancellationToken;
-            cancellationToken.ThrowIfCancellationRequested();
+			cancellationToken.ThrowIfCancellationRequested();
 
 			res.ContentType = MediaTypeNames.Application.Json;
 			return JsonSerializer.SerializeAsync(res.Body, body, _jsonOptions, cancellationToken);

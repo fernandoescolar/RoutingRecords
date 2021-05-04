@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RoutingRecordsApp
+namespace RoutingRecordsApp.Data
 {
 	public class TodoStore
 	{

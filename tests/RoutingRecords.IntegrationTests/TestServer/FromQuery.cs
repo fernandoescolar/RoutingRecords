@@ -2,66 +2,66 @@ using System;
 
 namespace RoutingRecords.IntegrationTests.TestServer
 {
-    public record GetQueryAlpha()
+	public record GetQueryAlpha()
 		: Get("query-values/alpha", async (req, res) =>
-        {
-            var a = req.FromQuery<string>("id");
-            await res.SendAsync(a.ToString());
-        });
+		{
+			var a = req.FromQuery<string>("id");
+			await res.SendAsync(a.ToString());
+		});
 
-    public record GetQueryBool()
+	public record GetQueryBool()
 		: Get("query-values/bool", async (req, res) =>
-        {
-            var a = req.FromQuery<bool>("id");
-            await res.SendAsync(a.ToString());
-        });
+		{
+			var a = req.FromQuery<bool>("id");
+			await res.SendAsync(a.ToString());
+		});
 
-    public record GetQueryDateTime()
+	public record GetQueryDateTime()
 		: Get("query-values/datetime", async (req, res) =>
-        {
-            var a = req.FromQuery<DateTime>("id");
-            await res.SendAsync(a.ToString("yyyy-MM-ddTHH:mm:ss"));
-        });
+		{
+			var a = req.FromQuery<DateTime>("id");
+			await res.SendAsync(a.ToString("yyyy-MM-ddTHH:mm:ss"));
+		});
 
-    public record GetQueryDecimal()
+	public record GetQueryDecimal()
 		: Get("query-values/decimal", async (req, res) =>
-        {
-            var a = req.FromQuery<decimal>("id");
-            await res.SendAsync(a.ToString());
-        });
+		{
+			var a = req.FromQuery<decimal>("id");
+			await res.SendAsync(a.ToString());
+		});
 
-    public record GetQueryDouble()
+	public record GetQueryDouble()
 		: Get("query-values/double", async (req, res) =>
-        {
-            var a = req.FromQuery<double>("id");
-            await res.SendAsync(a.ToString());
-        });
+		{
+			var a = req.FromQuery<double>("id");
+			await res.SendAsync(a.ToString());
+		});
 
-    public record GetQueryFloat()
+	public record GetQueryFloat()
 		: Get("query-values/float", async (req, res) =>
-        {
-            var a = req.FromQuery<float>("id");
-            await res.SendAsync(a.ToString());
-        });
+		{
+			var a = req.FromQuery<float>("id");
+			await res.SendAsync(a.ToString());
+		});
 
-    public record GetQueryGuid()
+	public record GetQueryGuid()
 		: Get("query-values/guid", async (req, res) =>
-        {
-            var a = req.FromQuery<Guid>("id");
-            await res.SendAsync(a.ToString());
-        });
+		{
+			var a = req.FromQuery<Guid>("id");
+			await res.SendAsync(a.ToString());
+		});
 
-    public record GetQueryInt()
+	public record GetQueryInt()
 		: Get("query-values/int", async (req, res) =>
-        {
-            var a = req.FromQuery<int>("id");
-            await res.SendAsync(a.ToString());
-        });
+		{
+			var a = req.FromQuery<int>("id");
+			await res.SendAsync(a.ToString());
+		});
 
-    public record GetQueryLong()
+	public record GetQueryLong()
 		: Get("query-values/long", async (req, res) =>
-        {
-            var a = req.FromQuery<long>("id");
-            await res.SendAsync(a.ToString());
-        });
+		{
+			var a = req.FromQuery<long>("id");
+			await res.SendAsync(a.ToString());
+		});
 }

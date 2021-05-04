@@ -5,11 +5,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace RoutingRecords.IntegrationTests.TestServer
 {
-    public class Startup
-    {
-       public void ConfigureServices(IServiceCollection services)
+	public class Startup
+	{
+		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddRoutes(typeof(Startup).Assembly);
+			services.AddRouteRecords(typeof(Startup).Assembly);
 		}
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -18,5 +18,5 @@ namespace RoutingRecords.IntegrationTests.TestServer
 			app.UseRouting();
 			app.UseEndpoints(endpoints => endpoints.MapRouteRecords());
 		}
-    }
+	}
 }

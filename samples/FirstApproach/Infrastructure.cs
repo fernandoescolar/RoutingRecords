@@ -51,12 +51,12 @@ namespace FirstApproach
 		{
 			using var scope = endpoints.ServiceProvider.CreateScope();
 			scope.ServiceProvider
-			     .GetServices<RouteRecord>()
-			     .ToList()
-			     .ForEach(route =>
-			     {
-				     var type = route.GetType();
-				     endpoints.MapMethods(
+				 .GetServices<RouteRecord>()
+				 .ToList()
+				 .ForEach(route =>
+				 {
+					 var type = route.GetType();
+					 endpoints.MapMethods(
 				  	 pattern: route.Pattern,
 				  	 httpMethods: new[] { route.Verb },
 				  	 requestDelegate: ctx =>
@@ -64,7 +64,7 @@ namespace FirstApproach
 				  		 var r = (RouteRecord)ctx.RequestServices.GetService(type);
 				  		 return r.RouteDelegate(ctx.Request, ctx.Response);
 				  	 });
-			     });
+				 });
 
 			return endpoints;
 		}

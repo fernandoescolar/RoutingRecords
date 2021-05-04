@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using RoutingRecords;
 using System.Linq;
 using System.Reflection;
 
-namespace RoutingRecords
+namespace Microsoft.Extensions.DependencyInjection
 {
 	public static class ServiceCollectionExtensions
 	{
@@ -12,7 +12,7 @@ namespace RoutingRecords
 		/// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
 		/// <param name="assemblies">The assemblies where it will look for object of type <see cref="RouteRecord"/>.</param>
 		/// <returns>A reference to this instance after the operation has completed.</returns>
-		public static IServiceCollection AddRoutes(this IServiceCollection services, params Assembly[] assemblies)
+		public static IServiceCollection AddRouteRecords(this IServiceCollection services, params Assembly[] assemblies)
 		{
 			assemblies
 					.SelectMany(a =>
@@ -35,14 +35,20 @@ namespace RoutingRecords
 		/// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
 		/// <returns>A reference to this instance after the operation has completed.</returns>
 		/// <remarks>It will look for objects of type <see cref="RouteRecord"/> in all loaded assemblies.</remarks>
-		public static IServiceCollection AddRoutes(this IServiceCollection services)
+		public static IServiceCollection AddRouteRecords(this IServiceCollection services)
 		{
-			var assemblies = Assembly.GetEntryAssembly()
+			var currentAssembly = Assembly.GetEntryAssembly();
+			var assemblies = currentAssembly
 									 .GetReferencedAssemblies()
 									 .Select(Assembly.Load)
-									 .ToArray();
+									 .ToList();
 
-			return services.AddRoutes(assemblies);
+			if (!assemblies.Contains(currentAssembly))
+			{
+				assemblies.Add(Assembly.GetEntryAssembly());
+			}
+
+			return services.AddRouteRecords(assemblies.ToArray());
 		}
 	}
 }

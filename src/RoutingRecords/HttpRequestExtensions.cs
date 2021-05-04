@@ -5,7 +5,7 @@ using System.ComponentModel;
 namespace RoutingRecords
 {
 
-    public static class HttpRequestExtensions
+	public static class HttpRequestExtensions
 	{
 		/// <summary>
 		/// Gets a value of type <see cref="T"/> from the route values for the specified <see cref="HttpRequest"/>.
