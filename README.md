@@ -4,8 +4,8 @@ RoutingRecords is a small set of tools that help Asp.Net Core developers to prog
 
 ```csharp
 public record Hello()
-    : Get("/", (req, res) =>
-        res.SendAsync("Welcome to RoutingRecords"));
+  : Get("/", (req, res) =>
+      res.SendAsync("Welcome to RoutingRecords"));
 ```
 
 Main features:
@@ -20,19 +20,19 @@ Take a look at this example:
 
 ```csharp
 public record UpdateItem(IItemStore store)
-    : Put("items/{id:int}", async (req, res) =>
+  : Put("items/{id:int}", async (req, res) =>
+  {
+    var id = req.FromRoute<int>("id");
+    var item = await req.FromJsonAsync<Item>();
+    if (item == null)
     {
-        var id = req.FromRoute<int>("id");
-        var item = await req.FromJsonAsync<Item>();
-        if (item == null)
-        {
-            res.Status(Status400BadRequest);
-            return;
-        }
+      res.Status(Status400BadRequest);
+      return;
+    }
 
-        await store.UpsertAsync(id, item);
-        await res.JsonAsync(item);
-    });
+    await store.UpsertAsync(id, item);
+    await res.JsonAsync(item);
+  });
 ```
 
 Isn't it cool?
@@ -62,19 +62,19 @@ using RoutingRecords;
 
 namespace SampleApp
 {
-    public class Startup
-	{
-		public void ConfigureServices(IServiceCollection services)
-		{
-			services.AddRouteRecords(typeof(Startup).Assembly);
-		}
+  public class Startup
+  {
+    public void ConfigureServices(IServiceCollection services)
+    {
+      services.AddRouteRecords(typeof(Startup).Assembly);
+    }
 
-		public void Configure(IApplicationBuilder app)
-		{
-			app.UseRouting();
-			app.UseEndpoints(endpoints => endpoints.MapRouteRecords());
-		}
-	}
+    public void Configure(IApplicationBuilder app)
+    {
+      app.UseRouting();
+      app.UseEndpoints(endpoints => endpoints.MapRouteRecords());
+    }
+  }
 }
 ```
 
@@ -85,9 +85,9 @@ using RoutingRecords;
 
 namespace SampleApp.Api
 {
-    public record Hello()
-        : Get("/", (req, res) =>
-            res.SendAsync("Welcome to RoutingRecords"));
+  public record Hello()
+    : Get("/", (req, res) =>
+        res.SendAsync("Welcome to RoutingRecords"));
 }
 ```
 
@@ -182,24 +182,24 @@ RoutingRoutes is full integrated with Asp.Net Authorization framework. You can a
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddRouteRecords();
+  services.AddRouteRecords();
 
-    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .Add...(options => { ... });
+  services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+          .Add...(options => { ... });
 
-    services.AddAuthorization(options =>
-    {
-        options.FallbackPolicy = new AuthorizationPolicyBuilder()
-            .RequireAuthenticatedUser()
-            .Build();
-    });
+  services.AddAuthorization(options =>
+  {
+      options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                                     .RequireAuthenticatedUser()
+                                     .Build();
+  });
 }
 
 public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 {
-    app.UseRouting();
-    app.UseAuthorization();
-    app.UseEndpoints(endpoints => endpoints.MapRouteRecords());
+  app.UseRouting();
+  app.UseAuthorization();
+  app.UseEndpoints(endpoints => endpoints.MapRouteRecords());
 }
 ```
 
@@ -210,13 +210,13 @@ In the same way you get a `IEndpointConventionBuilder` when you are registering 
 
 ```csharp
 interface IRecordEndpointConventionBuilder
-    : IEndpointConventionBuilder
+  : IEndpointConventionBuilder
 {
-    Type RouteRecordType { get; }
+  Type RouteRecordType { get; }
 }
 
 interface IRecordEndpointConventionBuilderCollection
-	: IEndpointConventionBuilder, IEnumerable<IRecordEndpointConventionBuilder>
+  : IEndpointConventionBuilder, IEnumerable<IRecordEndpointConventionBuilder>
 {
 }
 ```
@@ -226,19 +226,19 @@ So you can use the convention builders for every `RouteRecord`:
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddRouteRecords();
+  services.AddRouteRecords();
 
-    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .Add...(options => { ... });
+  services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+          .Add...(options => { ... });
 
-    services.AddAuthorization();
+  services.AddAuthorization();
 }
 
 public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 {
-    app.UseRouting();
-    app.UseAuthorization();
-    app.UseEndpoints(endpoints
+  app.UseRouting();
+  app.UseAuthorization();
+  app.UseEndpoints(endpoints
         => endpoints.MapRouteRecords()
                     .Where(x => x.RouteRecordType.IsNot<Hello>())
                     .ToList()
@@ -280,25 +280,24 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace SampleApp.Api.Todos
 {
-    public record CreateTodo(ITodoStore store)
-        : Post("todos", async (req, res) =>
-        {
-            var todo = await req.FromJsonAsync<Todo>();
-            if (todo == null)
-            {
-                res.Status(Status400BadRequest);
-                return;
-            }
+  public record CreateTodo(ITodoStore store)
+    : Post("todos", async (req, res) =>
+    {
+      var todo = await req.FromJsonAsync<Todo>();
+      if (todo == null)
+      {
+          res.Status(Status400BadRequest);
+          return;
+      }
 
-            await store.InsertAsync(todo);
-
-            await res
-                    .Status(Status201Created)
-                    .JsonAsync(new
-                    {
-                        Ref = $"todos/{store.Counter}"
-                    });
-        });
+      await store.InsertAsync(todo);
+      await res
+              .Status(Status201Created)
+              .JsonAsync(new
+              {
+                  Ref = $"todos/{store.Counter}"
+              });
+    });
 }
 ```
 
@@ -311,18 +310,18 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace SampleApp.Api.Todos
 {
-    public record ReadTodos(ITodoStore store)
-        : Get("todos", async (req, res) =>
-        {
-            var todos = await store.GetAllAsync();
-            if (!todos.Any())
-            {
-                res.Status(Status204NoContent);
-                return;
-            }
+  public record ReadTodos(ITodoStore store)
+    : Get("todos", async (req, res) =>
+    {
+      var todos = await store.GetAllAsync();
+      if (!todos.Any())
+      {
+        res.Status(Status204NoContent);
+        return;
+      }
 
-            await res.JsonAsync(todos);
-        });
+      await res.JsonAsync(todos);
+    });
 }
 ```
 
@@ -334,19 +333,19 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace SampleApp.Api.Todos
 {
-    public record ReadTodo(ITodoStore store)
-        : Get("todos/{id:int}", async (req, res) =>
-        {
-            var id = int.Parse((string)req.RouteValues["id"]);
-            var todo = await store.GetOneAsync(id);
-            if (todo == null)
-            {
-                res.Status(Status404NotFound);
-                return;
-            }
+  public record ReadTodo(ITodoStore store)
+    : Get("todos/{id:int}", async (req, res) =>
+    {
+      var id = int.Parse((string)req.RouteValues["id"]);
+      var todo = await store.GetOneAsync(id);
+      if (todo == null)
+      {
+        res.Status(Status404NotFound);
+        return;
+      }
 
-            await res.JsonAsync(todo);
-        });
+      await res.JsonAsync(todo);
+    });
 }
 ```
 
@@ -358,20 +357,20 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace SampleApp.Api.Todos
 {
-    public record UpdateTodo(ITodoStore store)
-        : Put("todos/{id:int}", async (req, res) =>
-        {
-            var id = req.FromRoute<int>("id");
-            var todo = await req.FromJsonAsync<Todo>();
-            if (todo == null)
-            {
-                res.Status(Status400BadRequest);
-                return;
-            }
+  public record UpdateTodo(ITodoStore store)
+    : Put("todos/{id:int}", async (req, res) =>
+    {
+      var id = req.FromRoute<int>("id");
+      var todo = await req.FromJsonAsync<Todo>();
+      if (todo == null)
+      {
+        res.Status(Status400BadRequest);
+        return;
+      }
 
-            await store.UpsertAsync(id, todo);
-            await res.JsonAsync(todo);
-        });
+      await store.UpsertAsync(id, todo);
+      await res.JsonAsync(todo);
+    });
 }
 ```
 
@@ -383,12 +382,12 @@ using RoutingRecords;
 
 namespace SampleApp.Api.Todos
 {
-    public record DeleteTodo(ITodoStore store)
-        : Delete("todos/{id:int}", async (req, res) =>
-        {
-            var id = req.FromRoute<int>("id");
-            await store.DeleteAsync(id);
-        });
+  public record DeleteTodo(ITodoStore store)
+    : Delete("todos/{id:int}", (req, res) =>
+    {
+      var id = req.FromRoute<int>("id");
+      return store.DeleteAsync(id);
+    });
 }
 ```
 

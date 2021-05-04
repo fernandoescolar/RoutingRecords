@@ -4,12 +4,10 @@
     <TargetFramework>net5.0</TargetFramework>
     <OutputType>Library</OutputType>
     <IsPackable>true</IsPackable>
-     <PackageId>RoutingRecords</PackageId>
+    <PackageId>RoutingRecords</PackageId>
     <PackageTags>AspNetCore;records;Routing</PackageTags>
     <Authors>Fernando Escolar</Authors>
-    <Description>
-      RoutingRecords is a small set of tools that help Asp.Net Core developers to program cool and simple APIs in .Net 5. It relies on record type objects to define inline endpoints.
-    </Description>
+    <Description>RoutingRecords is a small set of tools that help Asp.Net Core developers to program cool and simple APIs in .Net 5. It relies on record type objects to define inline endpoints.</Description>
     <PackageProjectUrl>https://github.com/fernandoescolar/RoutingRecords</PackageProjectUrl>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageIcon>icon.png</PackageIcon>
@@ -19,4 +17,5 @@
     <None Include="../../LICENSE.md" Pack="true" PackagePath="$(PackageLicenseFile)" />
     <None Include="icon.png" Pack="true" PackagePath="" />
   </ItemGroup>
+
 </Project>
