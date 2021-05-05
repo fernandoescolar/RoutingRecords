@@ -3,7 +3,7 @@
 RoutingRecords is a small set of tools that help Asp.Net Core developers to program cool and simple APIs in .Net 5. It relies on `record` type objects to define inline endpoints:
 
 ```csharp
-public record Hello()
+record Hello()
   : Get("/", (req, res) =>
       res.SendAsync("Welcome to RoutingRecords"));
 ```
@@ -19,7 +19,7 @@ Main features:
 Take a look at this example:
 
 ```csharp
-public record UpdateItem(IItemStore store)
+record UpdateItem(IItemStore store)
   : Put("items/{id:int}", async (req, res) =>
   {
     var id = req.FromRoute<int>("id");
@@ -37,6 +37,15 @@ public record UpdateItem(IItemStore store)
 
 Isn't it cool?
 
+## Why records?
+
+The `record` keyword is a new language feature in C# 9. It declares an awesome object because:
+
+- It is inmutable by default.
+- You can declare it in a sigle line.
+- You can inject external dependencies in the constructor.
+- They are very readable.
+
 ## Quick start
 
 Create a new web project:
@@ -53,7 +62,31 @@ First of all, you have to add `RoutingRecords` package reference to your project
 dotnet add package RoutingRecords
 ```
 
-Then you have to call `AddRouteRecords` in the `ConfigureServices` and `MapRouteRecords` in the enpoints mapping section:
+Then you have two choices:
+
+### Single source code file
+
+Delete all .cs files and add a new one with this content:
+
+```csharp
+using RoutingRecords;
+
+new ApiApp().Run();
+
+record Hello() : Get("/", (req, res) =>
+   res.SendAsync("Hello World!"));
+```
+
+And test your application:
+
+```bash
+dotnet run
+```
+
+> **Disclaimer**: this solution is great for quick little APIs.But its use is not recommended in production applications.
+### Traditional way
+
+In the StartUp file you have to call `AddRouteRecords` in the `ConfigureServices` and `MapRouteRecords` in the enpoints mapping section:
 
 ```csharp
 using Microsoft.AspNetCore.Builder;
@@ -87,7 +120,7 @@ namespace SampleApp.Api
 {
   public record Hello()
     : Get("/", (req, res) =>
-        res.SendAsync("Welcome to RoutingRecords"));
+        res.SendAsync("Hello World!"));
 }
 ```
 
@@ -174,6 +207,54 @@ HttpResponse Status(HttpStatusCode statusCode);
 - **SendAsync**: Writes a string in the response boy. The `mimeType` default value is "text/plain". If you don't specify `cancellationToken` it uses the current `HttpContext.RequestAborted` value.
 - **JsonAsync**: Writes an objet serialized as json in the response body. If you don't specify `cancellationToken` it uses the current `HttpContext.RequestAborted` value.
 - **Status**: Sets the response HTTP status code.
+
+## ApiApp
+
+It is an object that creates a web application host with a default confiuration. It allows you write a fast single file API.
+
+When you write:
+
+```csharp
+new ApiApp()
+  .ConfigureServices(services => /* Configure your services */)
+  .Configure( (app, env) => /* Confiure your application */)
+  .Run();
+```
+
+Is the same than:
+
+```csharp
+CreateHostBuilder(args).Build().Run();
+
+public static IHostBuilder CreateHostBuilder(string[] args) =>
+	Host.CreateDefaultBuilder(args)
+		.ConfigureWebHostDefaults(webBuilder =>
+		{
+			webBuilder.UseStartup<Startup>();
+		});
+
+class Startup
+{
+  public void ConfigureServices(IServiceCollection services)
+  {
+    /* Configure your services */
+    services.AddRouteRecords();
+  }
+
+  public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+  {
+    if (env.IsDevelopment())
+    {
+      app.UseDeveloperExceptionPage();
+    }
+
+     /* Confiure your application */
+
+    app.UseRouting();
+    app.UseEndpoints(endpoints => endpoints.MapRouteRecords());
+  }
+}
+```
 
 ## Authorization
 
