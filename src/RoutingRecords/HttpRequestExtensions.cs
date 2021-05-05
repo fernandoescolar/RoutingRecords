@@ -4,7 +4,6 @@ using System.ComponentModel;
 
 namespace RoutingRecords
 {
-
 	public static class HttpRequestExtensions
 	{
 		/// <summary>
