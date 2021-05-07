@@ -14,12 +14,16 @@ namespace RoutingRecordsApp
 			services.AddRouteRecords(typeof(Startup).Assembly);
 		}
 
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, TodoStore store)
 		{
 			if (env.IsDevelopment())
 			{
 				app.UseDeveloperExceptionPage();
 			}
+
+			// seed data
+			for (var i = 0; i < 100; i++) store.Insert(new Todo(default, $"demo task {i}", false));
+			////
 
 			app.UseRouting();
 			app.UseEndpoints(endpoints => endpoints.MapRouteRecords());

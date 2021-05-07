@@ -2,10 +2,9 @@
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using RoutingRecords;
+using RoutingRecords.Building;
 using System;
 using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 
 namespace Microsoft.AspNetCore.Builder
 {
@@ -20,8 +19,8 @@ namespace Microsoft.AspNetCore.Builder
 		{
 			using var scope = endpoints.ServiceProvider.CreateScope();
 			var builders = scope.ServiceProvider
-									.GetServices<RouteRecord>()
-				 				.Select(handler => endpoints.MapRouteRecord(handler));
+								.GetServices<RouteRecord>()
+				 				.Select(route => endpoints.MapRouteRecord(scope.ServiceProvider, route));
 
 			return new RecordEndpointConventionBuilderCollection(builders);
 		}
@@ -33,7 +32,10 @@ namespace Microsoft.AspNetCore.Builder
 		/// <param name="route">The <see cref="RouteRecord" /> to add.</param>
 		/// <returns>A <see cref="IRecordEndpointConventionBuilder" /> that can be used to further customize the endpoint.</returns>
 		public static IRecordEndpointConventionBuilder MapRouteRecord(this IEndpointRouteBuilder endpoints, RouteRecord route)
-			=> endpoints.MapRouteRecord(route.Pattern, route.Verb, route.GetType());
+		{
+			using var scope = endpoints.ServiceProvider.CreateScope();
+			return endpoints.MapRouteRecord(scope.ServiceProvider, route);
+		}
 
 		/// <summary>
 		/// Adds a <see cref="RouteRecord"/> endpoint to the Microsoft.AspNetCore.Routing.IEndpointRouteBuilder.
@@ -57,47 +59,21 @@ namespace Microsoft.AspNetCore.Builder
 				throw new InvalidCastException($"The type '{type}' is not a RouteRecord");
 			}
 
-			(var pattern, var verb) = GetRoutePatternAndVerb(endpoints, type);
-			return endpoints.MapRouteRecord(pattern, verb, type);
+			using var scope = endpoints.ServiceProvider.CreateScope();
+			var route = (RouteRecord)scope.ServiceProvider.GetRequiredService(type);
+			return endpoints.MapRouteRecord(scope.ServiceProvider, route);
 		}
 
-		private static IRecordEndpointConventionBuilder MapRouteRecord(this IEndpointRouteBuilder endpoints, string pattern, string verb, Type type)
-			=> endpoints.MapMethod(pattern,
-								   verb,
-								   type,
-								   ctx => RouteRecordHandler(ctx, type));
+		private static IRecordEndpointConventionBuilder MapRouteRecord(this IEndpointRouteBuilder endpoints, IServiceProvider serviceProvider, RouteRecord route)
+			=> endpoints.MapMethod(route.Pattern, route.Verb, route.GetType(), CreateDelegate(serviceProvider, route));
 
 		private static IRecordEndpointConventionBuilder MapMethod(this IEndpointRouteBuilder endpoints, string pattern, string verb, Type type, RequestDelegate requestDelegate)
 			=> new RecordEndpointConventionBuilder(type, endpoints.MapMethods(pattern, new[] { verb }, requestDelegate));
 
-		private static Task RouteRecordHandler(HttpContext ctx, Type type)
+		private static RequestDelegate CreateDelegate(IServiceProvider serviceProvider, RouteRecord route)
 		{
-			var r = (RouteRecord)ctx.RequestServices.GetService(type);
-			return r.RouteDelegate(ctx.Request, ctx.Response);
-		}
-
-		private static (string pattern, string verb) GetRoutePatternAndVerb(IEndpointRouteBuilder endpoints, Type type)
-		{
-			var route = InstanciateFromParameterLessContructor(type);
-			if (route != default)
-			{
-				return (route.Pattern, route.Verb);
-			}
-
-			using var scope = endpoints.ServiceProvider.CreateScope();
-			route = (RouteRecord)scope.ServiceProvider.GetRequiredService(type);
-			return (route.Pattern, route.Verb);
-		}
-
-		private static RouteRecord InstanciateFromParameterLessContructor(Type type)
-		{
-			var parameterLessConstructor = type.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, Type.EmptyTypes, null);
-			if (parameterLessConstructor != default)
-			{
-				return (RouteRecord)parameterLessConstructor.Invoke(Array.Empty<object>());
-			}
-
-			return default;
+			var requestDelegateBuilder = serviceProvider.GetRequiredService<IRequestDelegateBuilder>();
+			return requestDelegateBuilder.CreateFor(route);
 		}
 	}
 }

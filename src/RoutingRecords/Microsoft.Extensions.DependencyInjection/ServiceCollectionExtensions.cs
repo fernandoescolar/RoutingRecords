@@ -1,4 +1,9 @@
 ﻿using RoutingRecords;
+using RoutingRecords.Building;
+using RoutingRecords.Building.RequestDelegateConverters;
+using RoutingRecords.Building.RequestDelegateConverters.Default;
+using RoutingRecords.Building.RequestDelegateConverters.Default.ParameterBinders;
+using RoutingRecords.Building.RequestDelegateConverters.Default.ResponseProcessors;
 using System.Linq;
 using System.Reflection;
 
@@ -26,7 +31,7 @@ namespace Microsoft.Extensions.DependencyInjection
 						services.AddScoped(s => (RouteRecord)s.GetService(type));
 					});
 
-			return services;
+			return services.AddRouteRecordDefaults();
 		}
 
 		/// <summary>
@@ -49,6 +54,30 @@ namespace Microsoft.Extensions.DependencyInjection
 			}
 
 			return services.AddRouteRecords(assemblies.ToArray());
+		}
+
+		private static IServiceCollection AddRouteRecordDefaults(this IServiceCollection services)
+		{
+			services.AddTransient<IRequestDelegateBuilder, RequestDelegateBuilder>();
+			
+			services.AddTransient<IRequestDelegateConverter, FromRequestDelegate>();
+			services.AddTransient<IRequestDelegateConverter, FromRouteDelegate>();
+			services.AddTransient<IRequestDelegateConverter, FromDefaultDelegate>();
+
+			services.AddTransient<IParameterBinder, FromBodyBinder>();
+			services.AddTransient<IParameterBinder, FromHeaderBinder>();
+			services.AddTransient<IParameterBinder, FromQueryBinder>();
+			services.AddTransient<IParameterBinder, HttpContextBinder>();
+			services.AddTransient<IParameterBinder, HttpRequestBinder>();
+			services.AddTransient<IParameterBinder, HttpResponseBinder>();
+			services.AddTransient<IParameterBinder, DefaultBinder>();
+
+			services.AddTransient<IResponseProcessor, FromTaskWithResponseProcessor>();
+			services.AddTransient<IResponseProcessor, FromTaskProcessor>();
+			services.AddTransient<IResponseProcessor, FromResponseProcessor>();
+			services.AddTransient<IResponseProcessor, EmptyResponseProcessor>();
+
+			return services;
 		}
 	}
 }
