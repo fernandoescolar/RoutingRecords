@@ -1,13 +1,13 @@
 using RoutingRecords;
-using RoutingRecordsApp.Data;
+using RoutingRecordsAutoBindingApp.Data;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
-namespace RoutingRecordsApp.Api.V2.Todos
+namespace RoutingRecordsAutoBindingApp.Api
 {
 	delegate IResponse ReadTodoDelegate([FromRoute]int id);
 
 	public record ReadTodo(TodoStore store)
-		: Get("v2/todos/{id:int}", new ReadTodoDelegate(id =>
+		: Get("todos/{id:int}", new ReadTodoDelegate(id =>
 		{
 			var todo = store.GetOne(id);
 			if (todo == null)

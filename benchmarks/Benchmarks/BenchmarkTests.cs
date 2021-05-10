@@ -18,6 +18,8 @@ namespace Benchmarks
 		private HttpClient _mvcClient;
 		private HttpClient _routesClient;
 
+		private HttpClient _bindingClient;
+
 		[GlobalSetup]
 		public void GlobalSetup()
 		{
@@ -26,6 +28,9 @@ namespace Benchmarks
 
 			var routesFactory = new WebApplicationFactory<RoutingRecordsApp.Startup>();
 			_routesClient = routesFactory.CreateClient();
+
+			var bindingFactory = new WebApplicationFactory<RoutingRecordsAutoBindingApp.Startup>();
+			_bindingClient = bindingFactory.CreateClient();
 		}
 
 		[Benchmark(Baseline = true)]
@@ -72,23 +77,23 @@ namespace Benchmarks
 
 		[Benchmark]
 		[BenchmarkCategory("Add")]
-		public Task Add_RoutesV2()
+		public Task Add_Routes_Binding()
 		{
-			return _routesClient.PostAsync("/v2/todos", new StringContent($@"{{""title"":""Task {_rnd.NextDouble()}""}}", Encoding.UTF8, MediaTypeNames.Application.Json));
+			return _bindingClient.PostAsync("/todos", new StringContent($@"{{""title"":""Task {_rnd.NextDouble()}""}}", Encoding.UTF8, MediaTypeNames.Application.Json));
 		}
 
 		[Benchmark]
 		[BenchmarkCategory("Get")]
-		public Task Get_RoutesV2()
+		public Task Get_Routes_Binding()
 		{
-			return _routesClient.GetAsync("/v2/todos");
+			return _bindingClient.GetAsync("/todos");
 		}
 
 		[Benchmark]
 		[BenchmarkCategory("Update")]
-		public Task Update_RoutesV2()
+		public Task Update_Routes_Binding()
 		{
-			return _routesClient.PutAsync("/v2/todos/10", new StringContent($@"{{""title"":""Task {_rnd.NextDouble()}""}}", Encoding.UTF8, MediaTypeNames.Application.Json));
+			return _bindingClient.PutAsync("/todos/10", new StringContent($@"{{""title"":""Task {_rnd.NextDouble()}""}}", Encoding.UTF8, MediaTypeNames.Application.Json));
 		}
 	}
 }

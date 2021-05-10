@@ -1,13 +1,13 @@
 using RoutingRecords;
-using RoutingRecordsApp.Data;
+using RoutingRecordsAutoBindingApp.Data;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
-namespace RoutingRecordsApp.Api.V2.Todos
+namespace RoutingRecordsAutoBindingApp.Api
 {
 	delegate IResponse UpdateTodoDelegate([FromRoute]int id, [FromBody]Todo todo);
 
 	public record UpdateTodo(TodoStore store)
-		: Put("v2/todos/{id:int}", new UpdateTodoDelegate((id, todo) =>
+		: Put("todos/{id:int}", new UpdateTodoDelegate((id, todo) =>
 		{
 			if (todo == null)
 			{

@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\MvcApp\MvcApp.csproj" />
     <ProjectReference Include="..\RoutingRecordsApp\RoutingRecordsApp.csproj" />
+    <ProjectReference Include="..\RoutingRecordsAutoBindingApp\RoutingRecordsAutoBindingApp.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,6 +25,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="RoutingRecordsApp.deps.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="RoutingRecordsAutoBindingApp.deps.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

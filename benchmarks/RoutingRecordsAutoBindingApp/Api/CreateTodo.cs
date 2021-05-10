@@ -1,14 +1,14 @@
 using RoutingRecords;
-using RoutingRecordsApp.Data;
+using RoutingRecordsAutoBindingApp.Data;
 using System;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
-namespace RoutingRecordsApp.Api.V2.Todos
+namespace RoutingRecordsAutoBindingApp.Api
 {
 	delegate IResponse CreateTodoDelegate([FromBody]Todo todo);
 
 	public record CreateTodo(TodoStore store)
-		: Post("v2/todos", new CreateTodoDelegate(todo =>
+		: Post("todos", new CreateTodoDelegate(todo =>
 		{
 			if (todo == null)
 			{

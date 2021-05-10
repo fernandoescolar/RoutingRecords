@@ -1,12 +1,12 @@
 using RoutingRecords;
-using RoutingRecordsApp.Data;
+using RoutingRecordsAutoBindingApp.Data;
 
-namespace RoutingRecordsApp.Api.V2.Todos
+namespace RoutingRecordsAutoBindingApp.Api
 {
 	delegate void DeleteTodoDelegate([FromRoute]int id);
 
 	public record DeleteTodo(TodoStore store)
-		: Delete("v2/todos/{id:int}", new DeleteTodoDelegate(id =>
+		: Delete("todos/{id:int}", new DeleteTodoDelegate(id =>
 		{
 			store.Delete(id);
 		}));

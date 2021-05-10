@@ -188,3 +188,6 @@ NuGet.config
 *.bat
 doc/*.json
 doc/*.yml
+
+# BenchmarkDotNet
+BenchmarkDotNet.Artifacts/
