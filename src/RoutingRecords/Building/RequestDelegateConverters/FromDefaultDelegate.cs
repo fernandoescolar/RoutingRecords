@@ -30,11 +30,19 @@ namespace RoutingRecords.Building.RequestDelegateConverters
 
 			return async ctx =>
 			{
+				var parameters = new object[args.Count];
+				for(var i = 0; i < args.Count; i++)
+				{
+					var p = args[i](ctx);
+					if (p is Task<object> t)
+					{
+						p = await t;
+					}
+
+					parameters[i] = p;
+				}
+
 				var r = (RouteRecord)ctx.RequestServices.GetService(routerecordType);
-				var tasks = args.Select(x => x(ctx)).ToList();
-				await Task.WhenAll(tasks);
-				
-				var parameters = tasks.Select(x => x.Result).ToArray();
 				var result = r.Delegate.DynamicInvoke(parameters);
 				await resultProcessor.ProcessAsync(ctx, result);
 			};
@@ -46,11 +54,10 @@ namespace RoutingRecords.Building.RequestDelegateConverters
 			{
 				var binder = _parameterBinders.First(x => x.CanResolve(parameterInfo));
 				yield return binder.CreateBinding(parameterInfo);
-			}	
+			}
 		}
 
 		private IResponseProcessor GetResultProcessor(MethodInfo methodInfo)
 			=> _processors.First(x => x.CanProcess(methodInfo.ReturnType));
-
 	}
 }

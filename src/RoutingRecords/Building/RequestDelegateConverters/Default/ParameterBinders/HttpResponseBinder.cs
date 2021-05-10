@@ -9,6 +9,6 @@ namespace RoutingRecords.Building.RequestDelegateConverters.Default.ParameterBin
 			=> parameterInfo.ParameterType.Is<HttpResponse>();
 
 		public ParameterBinding CreateBinding(ParameterInfo parameterInfo)
-			=> ctx => ctx.Response.AsTask<object>();
+			=> ctx => ctx.Response;
 	}
 }

@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace RoutingRecords.Building.RequestDelegateConverters.Default.ParameterBinders
 {
-	public class DefaultBinder : IParameterBinder
+    public class DefaultBinder : IParameterBinder
 	{
 		public bool CanResolve(ParameterInfo parameterInfo)
 			=> true;
@@ -13,10 +12,10 @@ namespace RoutingRecords.Building.RequestDelegateConverters.Default.ParameterBin
 		public ParameterBinding CreateBinding(ParameterInfo parameterInfo)
 			=> ctx => Find(ctx, parameterInfo.ParameterType, parameterInfo.Name);
 
-		private static Task<object> Find(HttpContext ctx, Type type, string name)
-			=> type.IsClass ? 
+		private static object Find(HttpContext ctx, Type type, string name)
+			=> type.IsClass && type.IsNot<string>() ?
 			   ctx.Request.FromJsonAsync(type)
-			 : FindParameter(ctx, type, name).AsTask();
+			 : FindParameter(ctx, type, name);
 
 		private static object FindParameter(HttpContext ctx, Type type, string name)
 			=> ctx.Request.TryFromRoute(type, name, out object r) ? r

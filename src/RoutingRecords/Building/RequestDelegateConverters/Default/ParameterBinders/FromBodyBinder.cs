@@ -10,7 +10,7 @@ namespace RoutingRecords.Building.RequestDelegateConverters.Default.ParameterBin
 		public ParameterBinding CreateBinding(ParameterInfo parameterInfo)
 		{
 			var type = parameterInfo.ParameterType;
-			return async ctx => await ctx.Request.FromJsonAsync(type);
+			return ctx => ctx.Request.FromJsonAsync(type);
 		}
 	}
 }

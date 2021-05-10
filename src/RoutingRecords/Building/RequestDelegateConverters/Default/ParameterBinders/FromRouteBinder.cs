@@ -11,7 +11,7 @@ namespace RoutingRecords.Building.RequestDelegateConverters.Default.ParameterBin
 		{
 			var name = parameterInfo.Name;
 			var type = parameterInfo.ParameterType;
-			return ctx => ctx.Request.FromRoute(type, name).AsTask();
+			return ctx => ctx.Request.FromRoute(type, name);
 		}
 	}
 }

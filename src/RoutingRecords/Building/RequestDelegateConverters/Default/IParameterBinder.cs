@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace RoutingRecords.Building.RequestDelegateConverters.Default
 {
-	public delegate Task<object> ParameterBinding(HttpContext ctx);
+	public delegate object ParameterBinding(HttpContext ctx);
 
 	public interface IParameterBinder
 	{
