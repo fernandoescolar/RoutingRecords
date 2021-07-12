@@ -169,4 +169,4 @@ You can find the complete result [here](https://github.com/fernandoescolar/Routi
 
 ## License
 
-The source code we develop at **RoutingRecords** is default being licensed as CC-BY-SA-4.0. You can read more about [here](LICENSE.md).
+The source code we develop at **RoutingRecords** is default being licensed as MIT. You can read more about [here](LICENSE).
