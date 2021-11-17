@@ -5,10 +5,8 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace RoutingRecordsAutoBindingApp.Api
 {
-	delegate IResponse ReadTodosDelegate();
-
-	public record ReadTodos(TodoStore store)
-		: Get("todos", new ReadTodosDelegate(() =>
+    public record ReadTodos(TodoStore store)
+		: Get("todos", () =>
 		{
 			var todos = store.GetAll();
 			if (!todos.Any())
@@ -17,5 +15,5 @@ namespace RoutingRecordsAutoBindingApp.Api
 			}
 
 			return Json(todos);
-		}));
+		});
 }

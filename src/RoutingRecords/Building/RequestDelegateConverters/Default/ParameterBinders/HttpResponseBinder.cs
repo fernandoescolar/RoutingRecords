@@ -1,14 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Reflection;
+﻿namespace RoutingRecords.Building.RequestDelegateConverters.Default.ParameterBinders;
 
-namespace RoutingRecords.Building.RequestDelegateConverters.Default.ParameterBinders
+public class HttpResponseBinder : IParameterBinder
 {
-	public class HttpResponseBinder : IParameterBinder
-	{
-		public bool CanResolve(ParameterInfo parameterInfo)
-			=> parameterInfo.ParameterType.Is<HttpResponse>();
+    public bool CanResolve(ParameterInfo parameterInfo)
+        => parameterInfo.ParameterType.Is<HttpResponse>();
 
-		public ParameterBinding CreateBinding(ParameterInfo parameterInfo)
-			=> ctx => ctx.Response;
-	}
+    public ParameterBinding CreateBinding(ParameterInfo parameterInfo)
+        => ctx => ctx.Response;
 }

@@ -1,8 +1,5 @@
-using RoutingRecords;
+namespace AuthorizedApp.Api;
 
-namespace AuthorizedApp.Api
-{
-	public record Hello()
-		: Get("/", (req, res) =>
-			res.SendAsync("Welcome to RoutingRecords"));
-}
+public record Hello()
+    : Get("/", (req, res) =>
+        res.SendAsync("Welcome to RoutingRecords"));

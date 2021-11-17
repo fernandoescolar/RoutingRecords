@@ -1,13 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Threading.Tasks;
+﻿namespace RoutingRecords.Building.RequestDelegateConverters.Default;
 
-namespace RoutingRecords.Building.RequestDelegateConverters.Default
+public interface IResponseProcessor
 {
-	public interface IResponseProcessor
-	{
-		bool CanProcess(Type resultType);
+    bool CanProcess(Type resultType);
 
-		Task ProcessAsync(HttpContext context, object result);
-	}
+    Task ProcessAsync(HttpContext context, object result);
 }

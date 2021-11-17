@@ -1,12 +1,6 @@
-using RoutingRecords;
-using SampleApp.Data;
+namespace SampleApp.Api.Todos;
 
-namespace SampleApp.Api.Todos
-{
-	public record DeleteTodo(ITodoStore Store)
-		: Delete("todos/{id:int}", (req, res) =>
-		{
-			var id = req.FromRoute<int>("id");
-			return Store.DeleteAsync(id);
-		});
-}
+public record DeleteTodo(ITodoStore store)
+    : Delete("todos/{id:int}", (int id) =>
+        store.DeleteAsync(id)
+    );

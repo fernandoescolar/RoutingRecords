@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿namespace RoutingRecords.Building;
 
-namespace RoutingRecords.Building
+public interface IRequestDelegateBuilder
 {
-	public interface IRequestDelegateBuilder
-	{
-		RequestDelegate CreateFor(RouteRecord route);
-	}
+    RequestDelegate CreateFor(RouteRecord route);
 }

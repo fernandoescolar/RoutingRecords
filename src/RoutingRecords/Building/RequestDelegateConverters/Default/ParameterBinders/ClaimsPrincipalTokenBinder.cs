@@ -1,10 +1,10 @@
 ﻿namespace RoutingRecords.Building.RequestDelegateConverters.Default.ParameterBinders;
 
-public class HttpContextBinder : IParameterBinder
+public class ClaimsPrincipalTokenBinder : IParameterBinder
 {
     public bool CanResolve(ParameterInfo parameterInfo)
-        => parameterInfo.ParameterType.Is<HttpContext>();
+        => parameterInfo.ParameterType.Is<System.Security.Claims.ClaimsPrincipal>();
 
     public ParameterBinding CreateBinding(ParameterInfo parameterInfo)
-        => ctx => ctx;
+        => ctx => ctx.User;
 }

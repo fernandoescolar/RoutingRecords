@@ -1,12 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿namespace RoutingRecords.Building;
 
-namespace RoutingRecords.Building
+public interface IRequestDelegateConverter
 {
-	public interface IRequestDelegateConverter
-	{
-		bool CanConvert(Delegate @delegate);
+    bool CanConvert(Delegate @delegate);
 
-		RequestDelegate Convert(Type routerecordType, Delegate @delegate);
-	}
+    RequestDelegate Convert(Type routerecordType, Delegate @delegate);
 }

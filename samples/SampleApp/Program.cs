@@ -1,20 +1,10 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSingleton<ITodoStore, TodoStore>();
+builder.Services.AddRouteRecords();
 
-namespace SampleApp
-{
-	public class Program
-	{
-		public static void Main(string[] args)
-		{
-			CreateHostBuilder(args).Build().Run();
-		}
+var app = builder.Build();
+app.UseHttpsRedirection();
+app.MapRouteRecords();
 
-		public static IHostBuilder CreateHostBuilder(string[] args) =>
-			Host.CreateDefaultBuilder(args)
-				.ConfigureWebHostDefaults(webBuilder =>
-				{
-					webBuilder.UseStartup<Startup>();
-				});
-	}
-}
+
+app.Run();

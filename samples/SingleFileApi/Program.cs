@@ -1,7 +1,16 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using RoutingRecords;
-using System;
 
-new ApiApp().Run();
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddRouteRecords();
+
+var app = builder.Build();
+app.UseHttpsRedirection();
+app.MapRouteRecords();
+                               
+
+app.Run();
 
 record Hello0()
 	: Get("/0", (ctx) =>
@@ -12,5 +21,5 @@ record Hello1()
 	   res.SendAsync("Welcome to one file RoutingRecords"));
 
 record Hello2()
-	: Get("/2/{id:int}", new Func<int, IResponse>((id) =>
-		Send($"Welcome to: {id}")));
+	: Get("/2/{id:int}", (int id) =>
+		Send($"Welcome to: {id}"));

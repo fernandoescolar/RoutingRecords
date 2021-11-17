@@ -1,25 +1,18 @@
-using RoutingRecords;
-using SampleApp.Data;
-using static Microsoft.AspNetCore.Http.StatusCodes;
+namespace SampleApp.Api.Todos;
 
-namespace SampleApp.Api.Todos
-{
-	public record CreateTodo(ITodoStore Store)
-		: Post("todos", async (req, res) =>
-		{
-			var todo = await req.FromJsonAsync<Todo>();
-			if (todo == null)
-			{
-				res.Status(Status400BadRequest);
-				return;
-			}
+public record CreateTodo(ITodoStore store)
+    : Post("todos", async (Todo todo) =>
+    {
+        if (todo == null)
+        {
+            return Status(Status400BadRequest);
+        }
 
-			todo = await Store.InsertAsync(todo);
+        todo = await store.InsertAsync(todo);
 
-			await res.Status(Status201Created)
-					 .JsonAsync(new
-					 {
-						 Ref = $"todos/{todo.Id}"
-					 });
-		});
-}
+        return Status(Status201Created)
+               .Json(new
+               {
+                   Ref = $"todos/{todo.Id}"
+               });
+    });

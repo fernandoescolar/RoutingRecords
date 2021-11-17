@@ -1,18 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿namespace SampleApp.Data;
 
-namespace SampleApp.Data
+public interface ITodoStore
 {
-	public interface ITodoStore
-	{
-		Task<IEnumerable<Todo>> GetAllAsync();
+    Task<IEnumerable<Todo>> GetAllAsync();
 
-		Task<Todo> GetOneAsync(int id);
+    Task<Todo> GetOneAsync(int id);
 
-		Task<Todo> InsertAsync(Todo todo);
+    Task<Todo> InsertAsync(Todo todo);
 
-		Task<Todo> UpsertAsync(int id, Todo todo);
+    Task<Todo> UpsertAsync(int id, Todo todo);
 
-		Task DeleteAsync(int id);
-	}
+    Task DeleteAsync(int id);
 }
