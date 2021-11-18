@@ -1,5 +1,9 @@
 namespace SampleApp.Api.Todos;
 
+[Consumes(typeof(Todo), "application/json")]
+[Produces("application/json")]
+[ProducesResponseType(Status201Created)]
+[ProducesResponseType(Status400BadRequest)]
 public record CreateTodo(ITodoStore store)
     : Post("todos", async (Todo todo) =>
     {

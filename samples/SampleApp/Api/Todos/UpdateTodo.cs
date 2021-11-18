@@ -1,5 +1,8 @@
 namespace SampleApp.Api.Todos;
 
+[Produces("application/json")]
+[ProducesResponseType(Status200OK, Type = typeof(Todo))]
+[ProducesResponseType(Status400BadRequest)]
 public record UpdateTodo(ITodoStore store)
     : Put("todos/{id:int}", async (int id, Todo todo) =>
     {

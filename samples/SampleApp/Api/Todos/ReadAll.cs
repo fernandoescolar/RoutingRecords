@@ -1,5 +1,8 @@
 namespace SampleApp.Api.Todos;
 
+[Produces("application/json")]
+[ProducesResponseType(Status200OK, Type = typeof(Todo[]))]
+[ProducesResponseType(Status204NoContent, Type = typeof(Todo[]))]
 public record ReadTodos(ITodoStore store)
     : Get("todos", async () =>
     {

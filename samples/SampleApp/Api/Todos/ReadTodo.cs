@@ -1,5 +1,8 @@
 namespace SampleApp.Api.Todos;
 
+[Produces("application/json")]
+[ProducesResponseType(Status200OK, Type = typeof(Todo))]
+[ProducesResponseType(Status404NotFound)]
 public record ReadTodo(ITodoStore store)
     : Get("todos/{id:int}", async (int id) =>
     {
