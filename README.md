@@ -1,3 +1,5 @@
+> This project has been refactored and updated to **.Net 7** as part of [MinApiLib](https://github.com/fernandoescolar/MinApiLib)
+
 # RoutingRecords
 
 RoutingRecords is a small set of tools that help Asp.Net Core developers to program cool and simple APIs in .Net 5. It relies on `record` type objects to define inline endpoints:
